@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" page-range-format="minimal" default-locale="en-US">
+  <info>
+    <title>Bioscience, Biotechnology, and Biochemistry</title>
+    <title-short>BBB</title-short>
+    <id>https://raw.githubusercontent.com/kmurase8077/SME_RSS/main/bioscience-biotechnology-and-biochemistry.csl</id>
+    <link href="https://academic.oup.com/bbb/pages/general-instructions" rel="documentation"/>
+    <author>
+      <name>Custom style for BBB (OUP, Vol. 85- author-date)</name>
+    </author>
+    <category citation-format="author-date"/>
+    <category field="biology"/>
+    <summary>Author-date in-text with OUP SciMed-style reference list (journal abbreviation, Year;Volume:Pages, no bold/italics). Matches BBB instructions for authors.</summary>
+    <updated>2026-10-23T00:00:00+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License.</rights>
+  </info>
+  <locale xml:lang="en">
+    <terms>
+      <term name="et-al">et al.</term>
+      <term name="editor" form="short">
+        <single>ed.</single>
+        <multiple>eds.</multiple>
+      </term>
+      <term name="edition" form="short">edn.</term>
+      <term name="in">In</term>
+    </terms>
+  </locale>
+
+  <!-- ===== Macros ===== -->
+  <macro name="author">
+    <names variable="author">
+      <name and="symbol" delimiter=", " delimiter-precedes-last="never"
+            delimiter-precedes-et-al="never" initialize-with="" name-as-sort-order="all"
+            sort-separator=" " et-al-min="4" et-al-use-first="3"/>
+      <et-al font-style="italic"/>
+      <substitute>
+        <names variable="editor"/>
+        <text variable="title"/>
+      </substitute>
+    </names>
+  </macro>
+
+  <macro name="author-short">
+    <names variable="author">
+      <name form="short" and="text" delimiter=", " delimiter-precedes-last="never"
+            delimiter-precedes-et-al="never" et-al-min="3" et-al-use-first="1"/>
+      <et-al font-style="italic"/>
+      <substitute>
+        <names variable="editor"/>
+        <text variable="title" form="short"/>
+      </substitute>
+    </names>
+  </macro>
+
+  <macro name="editor">
+    <names variable="editor">
+      <name and="symbol" delimiter=", " delimiter-precedes-last="never"
+            delimiter-precedes-et-al="never" initialize-with="" name-as-sort-order="all"
+            sort-separator=" " et-al-min="4" et-al-use-first="3"/>
+      <et-al font-style="italic"/>
+      <label form="short" prefix=" (" suffix=")"/>
+    </names>
+  </macro>
+
+  <macro name="year-date">
+    <choose>
+      <if variable="issued">
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+      </if>
+      <else>
+        <text term="no date" form="short"/>
+      </else>
+    </choose>
+  </macro>
+
+  <macro name="edition">
+    <choose>
+      <if is-numeric="edition">
+        <group delimiter=" ">
+          <number variable="edition" form="ordinal"/>
+          <text term="edition" form="short"/>
+        </group>
+      </if>
+      <else>
+        <text variable="edition"/>
+      </else>
+    </choose>
+  </macro>
+
+  <macro name="publisher">
+    <group delimiter=": ">
+      <text variable="publisher-place"/>
+      <text variable="publisher"/>
+    </group>
+  </macro>
+
+  <macro name="access">
+    <choose>
+      <if variable="DOI">
+        <text variable="DOI" prefix="DOI: "/>
+      </if>
+      <else-if variable="URL">
+        <text variable="URL"/>
+      </else-if>
+    </choose>
+  </macro>
+
+  <!-- ===== Citation (in-text, author-date) ===== -->
+  <citation et-al-min="3" et-al-use-first="1" disambiguate-add-year-suffix="true"
+            disambiguate-add-names="true" disambiguate-add-givenname="true"
+            collapse="year" cite-group-delimiter=", " year-suffix-delimiter=","
+            after-collapse-delimiter="; ">
+    <sort>
+      <key macro="year-date"/>
+      <key macro="author"/>
+    </sort>
+    <layout prefix="(" suffix=")" delimiter="; ">
+      <group delimiter=" ">
+        <text macro="author-short"/>
+        <text macro="year-date"/>
+      </group>
+    </layout>
+  </citation>
+
+  <!-- ===== Bibliography ===== -->
+  <bibliography et-al-min="4" et-al-use-first="3" hanging-indent="false"
+                entry-spacing="0" line-spacing="1">
+    <sort>
+      <key macro="author"/>
+      <key macro="year-date"/>
+    </sort>
+    <layout suffix=".">
+      <choose>
+
+        <!-- Journal article -->
+        <if type="article-journal article-magazine" match="any">
+          <group delimiter=". ">
+            <text macro="author"/>
+            <text variable="title"/>
+            <group>
+              <text variable="container-title" form="short" strip-periods="true" font-style="italic"/>
+              <group prefix=" ">
+                <text macro="year-date"/>
+                <group prefix=";">
+                  <text variable="volume" font-weight="bold"/>
+                </group>
+                <text variable="page" prefix=":"/>
+                <choose>
+                  <if variable="page" match="none">
+                    <text macro="access" prefix=", "/>
+                  </if>
+                </choose>
+              </group>
+            </group>
+          </group>
+        </if>
+
+        <!-- Book chapter -->
+        <else-if type="chapter paper-conference" match="any">
+          <group delimiter=". ">
+            <text macro="author"/>
+            <text variable="title"/>
+            <group delimiter=" ">
+              <text term="in" text-case="capitalize-first" suffix=":"/>
+              <text macro="editor"/>
+              <text variable="container-title"/>
+            </group>
+            <text macro="edition"/>
+            <group delimiter=", ">
+              <text macro="publisher"/>
+              <group delimiter=", ">
+                <text macro="year-date"/>
+                <text variable="page"/>
+              </group>
+            </group>
+          </group>
+        </else-if>
+
+        <!-- Book -->
+        <else-if type="book">
+          <group delimiter=". ">
+            <text macro="author"/>
+            <text variable="title"/>
+            <text macro="edition"/>
+            <group delimiter=", ">
+              <text macro="publisher"/>
+              <text macro="year-date"/>
+            </group>
+          </group>
+        </else-if>
+
+        <!-- Fallback -->
+        <else>
+          <group delimiter=". ">
+            <text macro="author"/>
+            <text variable="title"/>
+            <group delimiter=", ">
+              <text macro="publisher"/>
+              <text macro="year-date"/>
+            </group>
+            <text macro="access"/>
+          </group>
+        </else>
+      </choose>
+    </layout>
+  </bibliography>
+</style>
